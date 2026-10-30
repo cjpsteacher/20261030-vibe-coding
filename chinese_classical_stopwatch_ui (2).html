@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>萬聖節金屬碼錶 - Halloween Edition</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            mono: ['"Share Tech Mono"', 'monospace'],
+            sans: ['"Rajdhani"', 'sans-serif'],
+          },
+          colors: {
+            metalDark: '#1e2229',
+            metalMid: '#2d333e',
+            metalLight: '#d1d8e0',
+            spookyOrange: '#ff7518',
+            spookyPurple: '#8a2be2',
+            vermilion: '#ff3b30',
+            jadeGreen: '#34c759',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* 淺銀色拉絲金屬質感背景 */
+    .brushed-metal {
+      background: 
+        radial-gradient(circle at 50% 30%, rgba(255,117,24,0.15) 0%, transparent 70%),
+        repeating-linear-gradient(90deg, rgba(0,0,0,0.02) 0px, rgba(0,0,0,0.02) 1px, transparent 1px, transparent 3px),
+        linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 50%, #d1d5db 100%);
+      box-shadow: inset 0 1px 2px rgba(255,255,255,0.8), inset 0 -2px 8px rgba(0,0,0,0.15);
+    }
+
+    /* 亮銀金屬盤面外飾邊框 */
+    .metal-bezel {
+      background: linear-gradient(145deg, #ffffff, #94a3b8);
+      box-shadow: 
+        0 10px 25px rgba(255, 117, 24, 0.25),
+        inset 0 2px 4px rgba(255,255,255,0.9),
+        inset 0 -2px 5px rgba(0,0,0,0.2);
+    }
+
+    /* 亮銀按鈕質感 */
+    .metal-btn {
+      background: linear-gradient(145deg, #f8fafc, #cbd5e1);
+      box-shadow: 
+        4px 4px 10px rgba(0,0,0,0.12),
+        -2px -2px 6px rgba(255,255,255,0.9),
+        inset 0 1px 1px rgba(255,255,255,0.8);
+    }
+    .metal-btn:active {
+      box-shadow: 
+        inset 2px 2px 5px rgba(0,0,0,0.2),
+        inset -1px -1px 2px rgba(255,255,255,0.6);
+    }
+
+    /* 動態效果 */
+    @keyframes rotateSubtle {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes batFly {
+      0% { transform: translate(-30px, 0px) scale(0.9) rotate(-10deg); }
+      50% { transform: translate(25px, -15px) scale(1.2) rotate(10deg); }
+      100% { transform: translate(-30px, 0px) scale(0.9) rotate(-10deg); }
+    }
+
+    @keyframes ghostFloat {
+      0%, 100% { transform: translateY(0px) rotate(-6deg); }
+      50% { transform: translateY(-16px) rotate(6deg); }
+    }
+
+    .animate-spin-slow {
+      animation: rotateSubtle 60s linear infinite;
+    }
+
+    .animate-bat {
+      animation: batFly 3.5s ease-in-out infinite;
+    }
+
+    .animate-ghost {
+      animation: ghostFloat 3s ease-in-out infinite;
+    }
+
+    /* 自訂卷軸 */
+    ::-webkit-scrollbar {
+      width: 4px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.05);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #ff7518;
+      border-radius: 2px;
+    }
+  </style>
+</head>
+<body class="bg-slate-900 text-slate-800 min-h-screen flex items-center justify-center p-4 font-sans select-none">
+
+  <!-- SVG 圖示庫定義 -->
+  <svg style="display: none;">
+    <symbol id="icon-error_outline" viewBox="0 0 24 24">
+      <path d="M12 20.016q3.281 0 5.648-2.367t2.367-5.648-2.367-5.648-5.648-2.367-5.648 2.367-2.367 5.648 2.367 5.648 5.648 2.367zM12 2.016q4.125 0 7.055 2.93t2.93 7.055-2.93 7.055-7.055 2.93-7.055-2.93-2.93-7.055 2.93-7.055 7.055-2.93zM11.016 6.984h1.969v6h-1.969v-6zM11.016 15h1.969v2.016h-1.969v-2.016z"></path>
+    </symbol>
+    <symbol id="icon-play_circle_filled" viewBox="0 0 24 24">
+      <path d="M9.984 16.5l6-4.5-6-4.5v9zM12 2.016q4.125 0 7.055 2.93t2.93 7.055-2.93 7.055-7.055 2.93-7.055-2.93-2.93-7.055 2.93-7.055 7.055-2.93z"></path>
+    </symbol>
+  </svg>
+
+  <!-- 3:4 比例的萬聖節金屬質感主卡片容器 -->
+  <div class="relative w-full max-w-[480px] aspect-[3/4] brushed-metal rounded-3xl border border-orange-300/80 shadow-[0_20px_50px_rgba(255,117,24,0.25)] overflow-hidden flex flex-col justify-between p-6 sm:p-8">
+    
+    <!-- 萬聖節背景蜘蛛網 & 蜘蛛裝飾 -->
+    <div class="absolute top-0 left-0 w-48 h-48 pointer-events-none opacity-30">
+      <svg viewBox="0 0 100 100" fill="currentColor" class="text-slate-800">
+        <path d="M0,0 L100,0 C60,20 20,60 0,100 Z" />
+        <path d="M0,0 Q50,50 0,100 M0,0 Q50,50 100,0 M20,0 Q40,40 0,20 M40,0 Q50,50 0,40 M60,0 Q60,60 0,60 M80,0 Q70,70 0,80" stroke="currentColor" fill="none" stroke-width="1.5"/>
+      </svg>
+    </div>
+
+    <!-- 飛行的超大萬聖節蝙蝠 (放大3倍) -->
+    <div class="absolute top-6 right-6 pointer-events-none animate-bat opacity-90 z-20">
+      <span class="text-6xl filter drop-shadow-lg">🦇</span>
+    </div>
+
+    <!-- 金屬網孔裝飾背景 -->
+    <div class="absolute inset-0 pointer-events-none opacity-15">
+      <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+        <pattern id="metal-grid" x="0" y="0" width="12" height="12" patternUnits="userSpaceOnUse">
+          <circle cx="6" cy="6" r="1.5" fill="#ff7518"/>
+        </pattern>
+        <rect width="100%" height="100%" fill="url(#metal-grid)" />
+      </svg>
+    </div>
+
+    <!-- 頂部精密標題區 -->
+    <header class="relative z-10 flex justify-between items-center border-b border-orange-400/30 pb-3">
+      <div class="flex items-center space-x-2">
+        <!-- 超大萬聖節南瓜圖標 (放大3倍) -->
+        <div class="w-12 h-12 flex items-center justify-center text-4xl filter drop-shadow">
+          🎃
+        </div>
+        <span class="text-sm sm:text-base tracking-widest text-slate-800 font-black uppercase">HALLOWEEN CHRONO</span>
+      </div>
+      <div id="status-badge" class="text-xs px-3 py-1.5 rounded-full bg-orange-100 text-orange-600 border border-orange-400/60 tracking-wider font-mono font-bold shadow-sm flex items-center gap-1.5">
+        <span class="text-xl">👻</span> READY
+      </div>
+    </header>
+
+    <!-- 中間金屬儀表板與時間顯示區 -->
+    <div class="relative z-10 my-auto flex flex-col items-center justify-center">
+      
+      <!-- 金屬時間轉盤外框 -->
+      <div class="relative w-56 h-56 sm:w-64 sm:h-64 rounded-full metal-bezel p-3 flex items-center justify-center">
+        
+        <!-- 超大漂浮幽靈裝飾 (放大3倍) -->
+        <div class="absolute -top-8 -right-8 z-30 animate-ghost text-6xl filter drop-shadow-xl">
+          👻
+        </div>
+
+        <!-- 金屬轉盤內部 -->
+        <div class="relative w-full h-full rounded-full bg-slate-100 border border-slate-300 flex items-center justify-center overflow-hidden shadow-inner">
+          
+          <!-- 金屬旋轉刻度圈 -->
+          <div id="outer-ring" class="absolute inset-1 rounded-full border border-dashed border-orange-400/50 animate-spin-slow"></div>
+          
+          <!-- 刻度線 SVG -->
+          <svg class="absolute inset-0 w-full h-full transform -rotate-90" viewBox="0 0 200 200">
+            <!-- 圓形刻度軌道 -->
+            <circle cx="100" cy="100" r="88" fill="none" stroke="rgba(255, 117, 24, 0.15)" stroke-width="4" />
+            
+            <!-- 動態進度條 (萬聖節南瓜橙) -->
+            <circle id="progress-circle" cx="100" cy="100" r="88" fill="none" stroke="#ff7518" stroke-width="3.5" 
+                    stroke-dasharray="553" stroke-dashoffset="553" stroke-linecap="round" class="transition-all duration-75 shadow-[0_0_8px_rgba(255,117,24,0.6)]" />
+                    
+            <!-- 金屬刻度標記 -->
+            <g stroke="#ff7518" stroke-width="1.5" opacity="0.8">
+              <line x1="100" y1="12" x2="100" y2="22" stroke-width="2.5" stroke="#ff7518" />
+              <line x1="188" y1="100" x2="178" y2="100" />
+              <line x1="100" y1="188" x2="100" y2="178" />
+              <line x1="12" y1="100" x2="22" y2="100" />
+            </g>
+          </svg>
+
+          <!-- 金屬萬聖紫旋轉指針 -->
+          <div id="hand" class="absolute w-full h-full flex justify-center items-center pointer-events-none transition-transform duration-75">
+            <div class="w-1 h-24 bg-gradient-to-t from-purple-800 to-spookyPurple rounded-full origin-bottom -translate-y-12 shadow-[0_0_8px_rgba(138,43,226,0.8)]"></div>
+            <div class="w-4 h-4 rounded-full bg-gradient-to-tr from-orange-300 to-white absolute z-10 border-2 border-orange-500 shadow"></div>
+          </div>
+
+          <!-- 中央螢光液晶顯示屏 -->
+          <div class="relative z-20 flex flex-col items-center bg-slate-200/90 p-4 sm:p-5 rounded-xl border border-orange-300 shadow-[inset_0_2px_6px_rgba(0,0,0,0.15)]">
+            <div id="display" class="text-4xl sm:text-5xl font-mono font-bold tracking-wider text-slate-800 drop-shadow-sm">
+              00:00.<span class="text-orange-600 text-3xl sm:text-4xl">00</span>
+            </div>
+            <span class="text-xs tracking-widest text-purple-800 uppercase mt-1 font-black flex items-center gap-1">
+              <span class="text-xl">🕷️</span> SPOOKY TIMER <span class="text-xl">🕷️</span>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 計圈紀錄清單區 -->
+      <div class="w-full mt-5 h-24 overflow-y-auto px-2 space-y-2" id="lap-list">
+        <!-- 計圈紀錄 -->
+      </div>
+    </div>
+
+    <!-- 底部金屬按鈕區 -->
+    <footer class="relative z-10 flex justify-between items-center px-2 pt-3 border-t border-orange-400/30">
+      
+      <!-- 重設 / 計圈按鈕 -->
+      <button id="reset-btn" disabled class="metal-btn w-20 h-20 sm:w-24 sm:h-24 rounded-full text-slate-600 font-bold text-base sm:text-lg flex flex-col items-center justify-center transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed hover:text-slate-900 border border-slate-300">
+        <svg class="w-5 h-5 fill-current mb-0.5">
+          <use href="#icon-error_outline"></use>
+        </svg>
+        <span id="reset-text">重設</span>
+        <span class="text-[10px] text-slate-400 tracking-tighter mt-0.5 font-normal">RESET</span>
+      </button>
+
+      <!-- 中央萬聖節糖果裝飾 (放大3倍) -->
+      <div class="flex flex-col items-center">
+        <span class="text-4xl animate-bounce filter drop-shadow">🍬</span>
+        <span class="text-[10px] text-orange-600 font-mono mt-0.5 font-extrabold tracking-wider">TRICK OR TREAT</span>
+      </div>
+
+      <!-- 開始 / 暫停 / 繼續按鈕 -->
+      <button id="start-btn" class="metal-btn w-20 h-20 sm:w-24 sm:h-24 rounded-full border border-orange-500/60 text-orange-600 font-bold text-base sm:text-lg flex flex-col items-center justify-center transition-all duration-200 hover:border-orange-500 hover:shadow-[0_0_15px_rgba(255,117,24,0.4)]">
+        <svg class="w-5 h-5 fill-current mb-0.5">
+          <use href="#icon-play_circle_filled"></use>
+        </svg>
+        <span id="start-text">開始</span>
+        <span id="start-subtext" class="text-[10px] opacity-80 tracking-tighter mt-0.5 font-normal">START</span>
+      </button>
+    </footer>
+
+  </div>
+
+  <script>
+    // 狀態變數
+    let startTime = 0;
+    let elapsedTime = 0;
+    let timerInterval = null;
+    let isRunning = false;
+    let lapCount = 0;
+
+    // DOM 元素
+    const display = document.getElementById('display');
+    const startBtn = document.getElementById('start-btn');
+    const startText = document.getElementById('start-text');
+    const startSubtext = document.getElementById('start-subtext');
+    const resetBtn = document.getElementById('reset-btn');
+    const resetText = document.getElementById('reset-text');
+    const statusBadge = document.getElementById('status-badge');
+    const lapList = document.getElementById('lap-list');
+    const progressCircle = document.getElementById('progress-circle');
+    const hand = document.getElementById('hand');
+    const outerRing = document.getElementById('outer-ring');
+
+    // 格式化時間
+    function formatTime(ms) {
+      const minutes = Math.floor(ms / 60000);
+      const seconds = Math.floor((ms % 60000) / 1000);
+      const milliseconds = Math.floor((ms % 1000) / 10);
+
+      const mm = String(minutes).padStart(2, '0');
+      const ss = String(seconds).padStart(2, '0');
+      const msStr = String(milliseconds).padStart(2, '0');
+
+      return `${mm}:${ss}.<span class="text-orange-600 text-3xl sm:text-4xl">${msStr}</span>`;
+    }
+
+    // 更新介面
+    function updateDisplay() {
+      const currentTime = Date.now();
+      elapsedTime = currentTime - startTime;
+
+      display.innerHTML = formatTime(elapsedTime);
+
+      const currentSeconds = (elapsedTime % 60000) / 1000;
+      const progress = currentSeconds / 60;
+      const dashoffset = 553 - (553 * progress);
+      progressCircle.style.strokeDashoffset = dashoffset;
+
+      const degrees = (currentSeconds / 60) * 360;
+      hand.style.transform = `rotate(${degrees}deg)`;
+    }
+
+    // 開始計時
+    function startTimer() {
+      startTime = Date.now() - elapsedTime;
+      timerInterval = setInterval(updateDisplay, 10);
+      isRunning = true;
+
+      startText.innerText = '暫停';
+      startSubtext.innerText = 'PAUSE';
+      startBtn.className = "metal-btn w-20 h-20 sm:w-24 sm:h-24 rounded-full border border-purple-600/70 text-purple-700 font-bold text-base sm:text-lg flex flex-col items-center justify-center transition-all duration-200 hover:shadow-[0_0_15px_rgba(138,43,226,0.4)]";
+
+      resetBtn.disabled = false;
+      resetText.innerText = '計圈';
+
+      statusBadge.innerHTML = '<span class="text-xl">🎃</span> RUNNING';
+      statusBadge.className = "text-xs px-3 py-1.5 rounded-full bg-orange-100 text-orange-600 border border-orange-400/60 animate-pulse font-mono font-bold flex items-center gap-1.5";
+      
+      outerRing.style.animationDuration = '10s';
+    }
+
+    function pauseTimer() {
+      clearInterval(timerInterval);
+      isRunning = false;
+
+      startText.innerText = '繼續';
+      startSubtext.innerText = 'RESUME';
+      startBtn.className = "metal-btn w-20 h-20 sm:w-24 sm:h-24 rounded-full border border-orange-500/60 text-orange-600 font-bold text-base sm:text-lg flex flex-col items-center justify-center transition-all duration-200 hover:shadow-[0_0_15px_rgba(255,117,24,0.4)]";
+
+      resetText.innerText = '重設';
+
+      statusBadge.innerHTML = '<span class="text-xl">🦇</span> PAUSED';
+      statusBadge.className = "text-xs px-3 py-1.5 rounded-full bg-purple-100 text-purple-700 border border-purple-400/60 font-mono font-bold flex items-center gap-1.5";
+
+      outerRing.style.animationDuration = '60s';
+    }
+
+    function resetTimer() {
+      clearInterval(timerInterval);
+      isRunning = false;
+      elapsedTime = 0;
+      lapCount = 0;
+
+      display.innerHTML = `00:00.<span class="text-orange-600 text-3xl sm:text-4xl">00</span>`;
+      progressCircle.style.strokeDashoffset = 553;
+      hand.style.transform = 'rotate(0deg)';
+      lapList.innerHTML = '';
+
+      startText.innerText = '開始';
+      startSubtext.innerText = 'START';
+      startBtn.className = "metal-btn w-20 h-20 sm:w-24 sm:h-24 rounded-full border border-orange-500/60 text-orange-600 font-bold text-base sm:text-lg flex flex-col items-center justify-center transition-all duration-200 hover:shadow-[0_0_15px_rgba(255,117,24,0.4)]";
+
+      resetBtn.disabled = true;
+      resetText.innerText = '重設';
+
+      statusBadge.innerHTML = '<span class="text-xl">👻</span> READY';
+      statusBadge.className = "text-xs px-3 py-1.5 rounded-full bg-orange-100 text-orange-600 border border-orange-400/60 font-mono font-bold shadow-sm flex items-center gap-1.5";
+    }
+
+    function addLap() {
+      lapCount++;
+      const lapItem = document.createElement('div');
+      lapItem.className = "flex justify-between items-center text-sm sm:text-base py-1.5 px-3 bg-orange-50/80 rounded border border-orange-200 font-mono shadow-sm";
+      lapItem.innerHTML = `
+        <span class="text-orange-700 font-semibold flex items-center gap-1.5"><span class="text-lg">🎃</span> LAP ${String(lapCount).padStart(2, '0')}</span>
+        <span class="text-slate-800 font-bold">${formatTime(elapsedTime)}</span>
+      `;
+      lapList.prepend(lapItem);
+    }
+
+    startBtn.addEventListener('click', () => {
+      if (!isRunning) {
+        startTimer();
+      } else {
+        pauseTimer();
+      }
+    });
+
+    resetBtn.addEventListener('click', () => {
+      if (isRunning) {
+        addLap();
+      } else {
+        resetTimer();
+      }
+    });
+  </script>
+</body>
+</html>
